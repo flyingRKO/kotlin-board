@@ -19,7 +19,7 @@ class Post(
     var content: String = content
         protected set
 
-    fun update(postUpdateRequestDto: PostUpdateRequestDto){
+    fun update(postUpdateRequestDto: PostUpdateRequestDto) {
         if (postUpdateRequestDto.updatedBy != this.createdBy) {
             throw PostNotUpdatedException()
         }

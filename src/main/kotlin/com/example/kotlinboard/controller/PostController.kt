@@ -14,7 +14,7 @@ class PostController(
     @PostMapping("/posts")
     fun createPost(
         @RequestBody request: PostCreateRequest,
-    ) : Long {
+    ): Long {
         return postService.createPost(request.toDto())
     }
 
@@ -22,7 +22,7 @@ class PostController(
     fun updatePost(
         @PathVariable id: Long,
         @RequestBody request: PostUpdateRequest,
-    ) : Long {
+    ): Long {
         return postService.updatePost(id, request.toDto())
     }
 
@@ -30,7 +30,7 @@ class PostController(
     fun deletePost(
         @PathVariable id: Long,
         @RequestParam deleteBy: String,
-    ) : Long {
+    ): Long {
         return postService.deletePost(id, deleteBy)
     }
 }

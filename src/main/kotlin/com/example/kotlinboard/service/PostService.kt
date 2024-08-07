@@ -16,7 +16,7 @@ class PostService(
     private val postRepository: PostRepository,
 ) {
     @Transactional
-    fun createPost(requestDto: PostCreateRequestDto) : Long {
+    fun createPost(requestDto: PostCreateRequestDto): Long {
         return postRepository.save(requestDto.toEntity()).id
     }
 
@@ -34,5 +34,4 @@ class PostService(
         postRepository.delete(post)
         return id
     }
-
 }
