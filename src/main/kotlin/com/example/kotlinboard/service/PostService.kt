@@ -3,9 +3,9 @@ package com.example.kotlinboard.service
 import com.example.kotlinboard.exception.PostNotDeletedException
 import com.example.kotlinboard.exception.PostNotFoundException
 import com.example.kotlinboard.repository.PostRepository
-import com.example.kotlinboard.service.dto.PostCreateRequestDto
-import com.example.kotlinboard.service.dto.PostUpdateRequestDto
-import com.example.kotlinboard.service.dto.toEntity
+import com.example.kotlinboard.service.dto.*
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -33,5 +33,13 @@ class PostService(
         if (post.createdBy != deleteBy) throw PostNotDeletedException()
         postRepository.delete(post)
         return id
+    }
+
+    fun getPost(id: Long): PostDetailResponseDto {
+        return postRepository.findByIdOrNull(id)?.toDetailResponseDto() ?: throw PostNotFoundException()
+    }
+
+    fun findPageBy(pageRequest: Pageable, postSearchRequestDto: PostSearchRequestDto): Page<PostSummaryResponseDto> {
+        return postRepository.findPageBy(pageRequest, postSearchRequestDto).toSummaryResponseDto()
     }
 }
