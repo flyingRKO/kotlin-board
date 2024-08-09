@@ -7,6 +7,7 @@ import com.example.kotlinboard.exception.PostNotFoundException
 import com.example.kotlinboard.exception.PostNotUpdatedException
 import com.example.kotlinboard.repository.CommentRepository
 import com.example.kotlinboard.repository.PostRepository
+import com.example.kotlinboard.repository.TagRepository
 import com.example.kotlinboard.service.dto.PostCreateRequestDto
 import com.example.kotlinboard.service.dto.PostSearchRequestDto
 import com.example.kotlinboard.service.dto.PostUpdateRequestDto
@@ -25,6 +26,7 @@ class PostServiceTest(
     private val postService: PostService,
     private val postRepository: PostRepository,
     private val commentRepository: CommentRepository,
+    private val tagRepository: TagRepository,
 ) : BehaviorSpec({
     beforeSpec {
         postRepository.saveAll(
@@ -61,10 +63,28 @@ class PostServiceTest(
                 post?.createdBy shouldBe "rko"
             }
         }
+        When("태그가 추가되면") {
+            val postId = postService.createPost(
+                PostCreateRequestDto(
+                    title = "제목",
+                    content = "내용",
+                    createdBy = "rko",
+                    tags = listOf("tag1", "tag2")
+                )
+            )
+            then("태그가 정상적으로 추가됨을 확인") {
+                val tags = tagRepository.findByPostId(postId)
+                tags.size shouldBe 2
+                tags[0].name shouldBe "tag1"
+                tags[1].name shouldBe "tag2"
+            }
+        }
     }
 
     given("게시글 수정 시") {
-        val saved = postRepository.save(Post(title = "title", content = "content", createdBy = "rko"))
+        val saved = postRepository.save(
+            Post(title = "title", content = "content", createdBy = "rko", tags = listOf("tag1", "tag2"))
+        )
         When("정상 수정시") {
             val updatedId = postService.updatePost(
                 saved.id,
@@ -108,6 +128,36 @@ class PostServiceTest(
                         )
                     )
                 }
+            }
+        }
+        When("태그가 수정되었을 때") {
+            val updatedId = postService.updatePost(
+                saved.id,
+                PostUpdateRequestDto(
+                    title = "updated title",
+                    content = "updated content",
+                    updatedBy = "rko",
+                    tags = listOf("tag1", "tag2", "tag3")
+                )
+            )
+            then("정상적으로 수정됨을 확인") {
+                val tags = tagRepository.findByPostId(updatedId)
+                tags.size shouldBe 3
+                tags[2].name shouldBe "tag3"
+            }
+            then("태그 순서가 변경되었을 때 정상적으로 변경됨을 확인") {
+                postService.updatePost(
+                    saved.id,
+                    PostUpdateRequestDto(
+                        title = "updated title",
+                        content = "updated content",
+                        updatedBy = "rko",
+                        tags = listOf("tag3", "tag2", "tag1")
+                    )
+                )
+                val tags = tagRepository.findByPostId(updatedId)
+                tags.size shouldBe 3
+                tags[2].name shouldBe "tag1"
             }
         }
     }
