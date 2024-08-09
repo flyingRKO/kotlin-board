@@ -19,6 +19,10 @@ class Post(
     var content: String = content
         protected set
 
+    @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = [CascadeType.ALL])
+    var comments: MutableList<Comment> = mutableListOf()
+        protected set
+
     fun update(postUpdateRequestDto: PostUpdateRequestDto) {
         if (postUpdateRequestDto.updatedBy != this.createdBy) {
             throw PostNotUpdatedException()
