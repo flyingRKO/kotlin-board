@@ -1,6 +1,6 @@
 package com.example.kotlinboard.exception
 
-open class CommentException(message : String) : RuntimeException(message)
+open class CommentException(message: String) : RuntimeException(message)
 
 class CommentNotUpdateException : CommentException("댓글을 수정할 수 없습니다.")
 

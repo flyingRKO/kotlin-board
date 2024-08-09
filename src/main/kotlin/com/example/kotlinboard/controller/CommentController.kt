@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class CommentController(
     private val commentService: CommentService,
-){
+) {
     @PostMapping("/posts/{postId}/comments")
     fun createComment(
         @PathVariable postId: Long,
         @RequestBody commentCreateRequest: CommentCreateRequest,
-    ) : Long{
+    ): Long {
         return commentService.createComment(postId, commentCreateRequest.toDto())
     }
 
@@ -27,7 +27,7 @@ class CommentController(
     fun updateComment(
         @PathVariable commentId: Long,
         @RequestBody commentUpdateRequest: CommentUpdateRequest,
-    ) : Long{
+    ): Long {
         return commentService.updateComment(commentId, commentUpdateRequest.toDto())
     }
 
@@ -35,8 +35,7 @@ class CommentController(
     fun deleteComment(
         @PathVariable commentId: Long,
         @RequestBody deleteBy: String,
-    ) : Long{
+    ): Long {
         return commentService.deleteComment(commentId, deleteBy)
     }
-
 }

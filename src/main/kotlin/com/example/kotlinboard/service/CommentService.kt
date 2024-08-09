@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(readOnly = true)
 class CommentService(
     private val commentRepository: CommentRepository,
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
 ) {
     @Transactional
-    fun createComment(postId: Long, commentCreateRequestDto : CommentCreateRequestDto): Long {
+    fun createComment(postId: Long, commentCreateRequestDto: CommentCreateRequestDto): Long {
         val post = postRepository.findByIdOrNull(postId) ?: throw PostNotFoundException()
         return commentRepository.save(commentCreateRequestDto.toEntity(post)).id
     }
